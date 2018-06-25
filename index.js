@@ -71,7 +71,7 @@ class SlackError extends Plugin {
                         },
                         {
                             "title": "Error Message",
-                            "value": `${err}`,
+                            "value": err.stack.toString(),
                             "short": false
                         }
                     ],
