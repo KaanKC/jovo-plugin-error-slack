@@ -4,25 +4,22 @@ const request = require('request');
 const jovoLogo16x16URL = 'https://raw.githubusercontent.com/jovotech/jovo-framework-nodejs/master/docs/img/jovo-logo-16x16.png';
 
 class SlackError extends Plugin {
-    /**
-     * ts doesn't work
-     */
     constructor(options) {
         super(options);
         this.webhookURL = options.webhookURL;
-        this.channel = options.channel ? options.channel : "",
-        this.fallback = options.fallback ? options.fallback : "Error Message";
-        this.color = options.color ? options.color : "#ff0000";
-        this.pretext = options.pretext ? options.pretext : "" 
-        this.author_name = options.author_name ? options.author_name : ""
-        this.author_link = options.author_link ? options.author_link : "";
-        this.author_icon = options.author_icon ? options.author_icon : "";
-        this.title = options.title ? options.title : "An error has occured!",
-        this.title_link = options.title_link ? options.title_link : "";
-        this.text = options.text ? options.text : "";
-        this.image_url = options.image_url ? options.image_url : "";
-        this.thumb_url = options.thumb_url ? options.thumb_url : "";
-        this.footer = options.footer ? options.footer : "Jovo Plugin - Slack Error";
+        this.channel = options.channel ? options.channel : '',
+        this.fallback = options.fallback ? options.fallback : 'Error Message';
+        this.color = options.color ? options.color : '#ff0000';
+        this.pretext = options.pretext ? options.pretext : '' 
+        this.author_name = options.author_name ? options.author_name : ''
+        this.author_link = options.author_link ? options.author_link : '';
+        this.author_icon = options.author_icon ? options.author_icon : '';
+        this.title = options.title ? options.title : 'An error has occured!',
+        this.title_link = options.title_link ? options.title_link : '';
+        this.text = options.text ? options.text : '';
+        this.image_url = options.image_url ? options.image_url : '';
+        this.thumb_url = options.thumb_url ? options.thumb_url : '';
+        this.footer = options.footer ? options.footer : 'Jovo Plugin - Slack Error';
         this.footer_icon = options.footer_icon ? options.footer_icon : jovoLogo16x16URL;
     }
 
