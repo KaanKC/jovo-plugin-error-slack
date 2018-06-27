@@ -1,3 +1,5 @@
+![Jovo Plugin Slack Error](./_images/slack-error-plugin-png)
+
 # Installation
 ```sh
 $ npm install jovo-plugin-slack-error-log --save
@@ -13,6 +15,7 @@ let options = {
 
 app.register('SlackError', new SlackError(options));
 ```
+To create enable incoming webhooks for your Slack follow this [guide](https://api.slack.com/incoming-webhooks).
 
 # Customize
 NOTE: The webhookURL is a **required** parameter
