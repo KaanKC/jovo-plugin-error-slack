@@ -31,7 +31,6 @@ class SlackError extends Plugin {
         });
 
         app.on('responseError', (jovo, err) => {
-            console.log('kek');
             let log = this.createLog(jovo, 'Response Error', err);
             this.sendRequest(log);
         });
