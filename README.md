@@ -1,5 +1,3 @@
-![Jovo Plugin Slack Error](./_images/slack-error-plugin-png)
-
 # Installation
 ```sh
 $ npm install jovo-plugin-slack-error-log --save
@@ -61,6 +59,8 @@ let options = {
     channel : '#channel-name / @user-name';
 }
 ```
+
+![Jovo Plugin Slack Error](./_images/slack-error-plugin.png)
 
 # License
 
