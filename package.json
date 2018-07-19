@@ -1,5 +1,5 @@
 {
-  "name": "jovo-plugin-slack-error-log",
+  "name": "jovo-plugin-error-slack",
   "version": "1.0.0",
   "description": "Logs errors of your Jovo application to Slack",
   "main": "index.js",
