@@ -1,6 +1,6 @@
 # Installation
 ```sh
-$ npm install jovo-plugin-slack-error-log --save
+$ npm install jovo-plugin-error-slack --save
 ```
 
 In your Jovo project:
