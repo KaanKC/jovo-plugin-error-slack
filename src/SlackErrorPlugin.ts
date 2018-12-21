@@ -1,6 +1,8 @@
 import { PluginConfig, Plugin, BaseApp, HandleRequest } from 'jovo-core';
 import request = require('request');
 
+const jovoLogo16x16URL = 'https://raw.githubusercontent.com/jovotech/jovo-framework-nodejs/master/docs/img/jovo-logo-16x16.png';
+
 export interface Config extends PluginConfig {
     webhookUrl: string,
     channel?: string,
@@ -26,19 +28,19 @@ export class SlackErrorPlugin implements Plugin {
     config: Config = {
         webhookUrl: '',
         channel: '',
-        fallback: '',
-        color: '',
+        fallback: 'Error Message',
+        color: '#ff0000',
         pretext: '', 
         author_name: '',
         author_link: '',
         author_icon: '',
-        title: '',
+        title: 'An error has occured!',
         title_link: '',
         text: '',
         image_url: '',
         thumb_url: '',
-        footer: '',
-        footer_icon: '',
+        footer: 'Jovo Plugin - Slack Error',
+        footer_icon: jovoLogo16x16URL,
     };
 
     constructor() {
