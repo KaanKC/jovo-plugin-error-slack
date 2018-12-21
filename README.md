@@ -1,6 +1,6 @@
 # Installation
 ```sh
-$ npm install jovo-plugin-error-slack --save
+$ npm install jovo-plugin-error-slack@1.0.0 --save-exact
 ```
 
 In your Jovo project:
@@ -43,7 +43,7 @@ let options = {
 If you don't customize anything, these default values will be used:
 ```javascript
 let options = {
-    channel: 'Channel you specified on your webhook\'s settings',
+    channel: 'Channel you specified in your webhook\'s settings',
     fallback: 'Error Message',
     color: '#ff0000',
     title: 'An error has occured!',
