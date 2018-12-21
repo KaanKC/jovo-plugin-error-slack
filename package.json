@@ -1,21 +1,22 @@
 {
   "name": "jovo-plugin-error-slack",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Logs errors of your Jovo application to Slack",
-  "main": "index.js",
+  "main": "dist/src/index",
+  "types": "dist/src/index.d.ts",
   "scripts": {
+    "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kaan Kilic <kaan@jovo.tech>",
   "license": "MIT",
-  "peerDependencies": {
-    "jovo-framework": "^1.2.1"
-  },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "jovo-framework": "^1.2.1"
+    "@types/node": "^10.3.1",
+    "@types/request": "^2.48.1",
+    "typescript": "^3.2.2"
   },
   "dependencies": {
-    "request": "^2.87.0"
+    "jovo-core": "^2.0.2",
+    "request": "^2.88.0"
   }
 }
