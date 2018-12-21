@@ -41,9 +41,6 @@ export class SlackErrorPlugin implements Plugin {
         footer_icon: '',
     };
 
-    /**
-     * Nothing needed to initialize
-     */
     constructor() {
 
     }
