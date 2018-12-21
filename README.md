@@ -1,5 +1,7 @@
 # Installation
 
+> If you are using the Jovo Framework version < 2.0.0, please checkout the v1 branch [here](https://github.com/KaanKC/jovo-plugin-error-slack/tree/v1)
+
 ```sh
 $ npm install jovo-plugin-error-slack --save
 ```
