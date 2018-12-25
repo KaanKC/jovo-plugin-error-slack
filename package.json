@@ -1,6 +1,6 @@
 {
   "name": "jovo-plugin-error-slack",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Logs errors of your Jovo application to Slack",
   "main": "dist/src/index",
   "types": "dist/src/index.d.ts",
@@ -18,5 +18,8 @@
   "dependencies": {
     "jovo-core": "^2.0.2",
     "request": "^2.88.0"
-  }
+  },
+  "files": [
+    "dist/src/**/*"
+  ]
 }
