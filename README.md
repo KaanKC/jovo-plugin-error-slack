@@ -22,7 +22,7 @@ app.use(
 To create enable incoming webhooks for your Slack follow this [guide](https://api.slack.com/incoming-webhooks).
 
 # Customize
-NOTE: The webhookURL is a **required** parameter
+NOTE: The webhookUrl is a **required** parameter
 
 The plugin sends the error message as an [attachement](https://api.slack.com/docs/message-attachments). Every parameter is customizable except the `ts` parameter.
 
@@ -32,7 +32,7 @@ module.exports = {
     // other configurations
     plugin: {
         SlackErrorPlugin: {
-            webhookURL: '',
+            webhookUrl: '',
             channel: '',
             fallback: '',
             color: '',
