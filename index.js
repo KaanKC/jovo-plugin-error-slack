@@ -42,6 +42,16 @@ class SlackError extends Plugin {
         * @returns {*}
         */
     createLog(jovo, errorType, err) {
+        let intentName;
+        try {
+            intentName = jovo.getIntentName();
+        } catch {
+            try {
+                intentName = jovo.request().getType();
+            } catch {
+                intentNam = ' - ';
+            }
+        }
         let log = {
             "channel": this.channel,
             "attachments": [
@@ -87,7 +97,7 @@ class SlackError extends Plugin {
                         },
                         {
                             "title": "Intent",
-                            "value": jovo.getIntentName(),
+                            "value": intentName,
                             "short": true
                         },
                         {
