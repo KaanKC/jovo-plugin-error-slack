@@ -13,11 +13,13 @@
   "devDependencies": {
     "@types/node": "^10.3.1",
     "@types/request": "^2.48.1",
+    "@types/lodash.get": "^4.4.4",
     "typescript": "^3.2.2"
   },
   "dependencies": {
     "jovo-core": "^2.0.2",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "lodash.get": "^4.4.2"
   },
   "files": [
     "dist/src/**/*"
