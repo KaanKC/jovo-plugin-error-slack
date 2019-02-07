@@ -1,5 +1,6 @@
 import { PluginConfig, Plugin, BaseApp, HandleRequest } from 'jovo-core';
 import request = require('request');
+import _get = require('lodash.get');
 
 const jovoLogo16x16URL = 'https://raw.githubusercontent.com/jovotech/jovo-framework-nodejs/master/docs/img/jovo-logo-16x16.png';
 
@@ -66,10 +67,13 @@ export class SlackErrorPlugin implements Plugin {
         if (!handleRequest.jovo) {
             return;
         }
-        console.log(handleRequest.jovo.$request!.toJSON().request.type);
-        if (handleRequest.jovo.$request!.toJSON().request.type === 'SessionEndedRequest') {
+        if (handleRequest.jovo.constructor.name !== 'AlexaSkill') {
+            return;
+        }
+        const request = JSON.parse(JSON.stringify(handleRequest.jovo.$request!));
+        if (_get(request, 'request.type') === 'SessionEndedRequest') {
             // not user initiated, i.e. there was an error
-            if (handleRequest.jovo.$request!.toJSON().request.reason === 'ERROR') {
+            if (_get(request, 'request.reason') === 'ERROR') {
                 const log = this.createSessionEndedLog(handleRequest);
                 this.sendRequest(log);
             }
