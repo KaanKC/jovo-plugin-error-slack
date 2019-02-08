@@ -49,7 +49,7 @@ class SlackError extends Plugin {
             try {
                 intentName = jovo.request().getType();
             } catch {
-                intentNam = ' - ';
+                intentName = ' - ';
             }
         }
         let log = {
