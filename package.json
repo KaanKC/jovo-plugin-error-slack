@@ -18,8 +18,7 @@
   },
   "dependencies": {
     "jovo-core": "^3.0.16",
-    "lodash.get": "^4.4.2",
-    "request": "^2.88.0"
+    "lodash.get": "^4.4.2"
   },
   "files": [
     "dist/src/**/*"
