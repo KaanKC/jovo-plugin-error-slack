@@ -208,7 +208,38 @@ export class SlackErrorPlugin implements Plugin {
                 }
             ]
         }
+
+        // if the host is lambda, we extract the cloudwatch log link and add it to the logs
+        if (handleRequest.host.constructor.name === 'Lambda') {
+            const cloudwatchUrl = this.getCloudwatchUrl(handleRequest.host);
+            const cloudwatchField = {
+                "title": "Cloudwatch URL",
+                "value": `<${cloudwatchUrl}|Cloudwatch Log URL>`,
+                "short": true
+            }
+            log.attachments[0].fields.push(cloudwatchField);
+        }
+
         return log;
+    }
+
+    /**
+     * Returns the cloudwatch url of the log insights for the specific AWS request ID.
+     * See Stackoverflow link for examples of Cloudwatch's URL encoding
+     * @param host Lambda class from jovo-framework
+     * @see https://stackoverflow.com/questions/60796991/is-there-a-way-to-generate-the-aws-console-urls-for-cloudwatch-log-group-filters
+     */
+    getCloudwatchUrl(host: any): string {
+        const awsRequestId = host.context.awsRequestId;
+        const region = host.context.invokedFunctionArn.split(':')[3]; // e.g. arn:aws:lambda:eu-west-1:820261819571:function:testName
+        const logGroupName = host.context.logGroupName;
+        const logStreamName = host.context.logStreamName
+        const baseUrl = `https://${region}.console.aws.amazon.com/cloudwatch/home?region=${region}#logsV2:log-groups/log-group/`;
+        const logGroup = `${logGroupName.replace(/\//g, '$252F')}/log-events/`;
+        const logStream = `${logStreamName!.replace('$', '$2524').replace('[', '$255B').replace(']', '$255D').replace(/\//g, '$252F')}`;
+        const filterPattern = `$3Ffilterpattern$3D$252${awsRequestId}`
+        
+        return baseUrl + logGroup + logStream + filterPattern;
     }
 
     /**
