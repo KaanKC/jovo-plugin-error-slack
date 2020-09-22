@@ -1,5 +1,4 @@
-import { PluginConfig, Plugin, BaseApp, HandleRequest } from 'jovo-core';
-import request = require('request');
+import { PluginConfig, Plugin, BaseApp, HandleRequest, HttpService } from 'jovo-core';
 import _get = require('lodash.get');
 
 const jovoLogo16x16URL = 'https://raw.githubusercontent.com/jovotech/jovo-framework-nodejs/master/docs/img/jovo-logo-16x16.png';
@@ -139,12 +138,12 @@ export class SlackErrorPlugin implements Plugin {
      * Will be called every time an error occurs
      * @param handleRequest contains current app?, host?, jovo? and error? instance
      */
-    error(handleRequest: HandleRequest): void {
+    async error(handleRequest: HandleRequest): Promise<void> {
         if (!handleRequest.jovo) {
             return;
         }
         const log = this.createErrorLog(handleRequest);
-        this.sendRequest(log);
+        await this.sendRequest(log);
     }
 
     /**
@@ -216,16 +215,7 @@ export class SlackErrorPlugin implements Plugin {
      * Sends out the request to the Slack API
      * @param log message, which will be sent to Slack
      */
-    sendRequest(log: object): void {
-        request({
-            uri: this.config.webhookUrl!,
-            method: 'POST',
-            json: true,
-            body: log
-        }, function (error, response, body) {
-            if (error) {
-                console.log(error);
-            }
-        });
+    async sendRequest(log: object): Promise<void> {
+        await HttpService.post(this.config.webhookUrl, log);
     }    
 }
