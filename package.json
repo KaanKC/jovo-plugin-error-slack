@@ -14,7 +14,6 @@
     "@types/lodash.get": "^4.4.4",
     "@types/node": "^10.3.1",
     "@types/request": "^2.48.1",
-    "jovo-framework": "^3.0.24",
     "typescript": "^3.2.2"
   },
   "dependencies": {
