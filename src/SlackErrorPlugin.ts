@@ -46,25 +46,28 @@ export class SlackErrorPlugin implements Plugin {
 
     }
 
-    sessionEndedRequest(handleRequest: HandleRequest) {
+    private sessionEndedRequest(handleRequest: HandleRequest) {
         if (!handleRequest.jovo) {
             return;
         }
         if (handleRequest.jovo.constructor.name !== 'AlexaSkill') {
             return;
         }
+
+        const pluginConfig = handleRequest.jovo.$app.$plugins.get('SlackErrorPlugin')!.config as IConfig;
+
         const request = JSON.parse(JSON.stringify(handleRequest.jovo.$request!));
         if (_get(request, 'request.type') === 'SessionEndedRequest') {
             // not user initiated, i.e. there was an error
             if (_get(request, 'request.reason') === 'ERROR') {
-                const log = this.createSessionEndedLog(handleRequest);
-                this.sendRequest(log);
+                const log = SlackErrorPlugin.createSessionEndedLog(handleRequest, pluginConfig);
+                SlackErrorPlugin.sendRequest(pluginConfig.webhookUrl, log);
             }
         }
     }
     
-    createSessionEndedLog(handleRequest: HandleRequest) {
-        let log = this.getBaseLog(handleRequest.jovo!);
+    private static createSessionEndedLog(handleRequest: HandleRequest, config: IConfig) {
+        let log = SlackErrorPlugin.getBaseLog(handleRequest.jovo!, config);
         log.attachments[0].fields.push(       
             {
                 "title": "RequestId",
@@ -84,7 +87,7 @@ export class SlackErrorPlugin implements Plugin {
 
         // if the host is lambda, we extract the cloudwatch log link and add it to the logs
         if (handleRequest.host.constructor.name === 'Lambda') {
-            log = this.addCloudWatchUrl(log, handleRequest.host);
+            log = SlackErrorPlugin.addCloudWatchUrl(log, handleRequest.host);
         }
 
         return log;
@@ -93,20 +96,23 @@ export class SlackErrorPlugin implements Plugin {
      * Will be called every time an error occurs
      * @param handleRequest contains current app?, host?, jovo? and error? instance
      */
-    async error(handleRequest: HandleRequest): Promise<void> {
+    private async error(handleRequest: HandleRequest): Promise<void> {
         if (!handleRequest.jovo) {
             return;
         }
-        const log = this.createErrorLog(handleRequest);
-        await this.sendRequest(log);
+
+        const pluginConfig = handleRequest.jovo.$app.$plugins.get('SlackErrorPlugin')!.config as IConfig;
+
+        const log = SlackErrorPlugin.createErrorLog(handleRequest, pluginConfig);
+        await SlackErrorPlugin.sendRequest(pluginConfig.webhookUrl, log);
     }
 
     /**
      * Creates message for Slack
      * @param handleRequest 
      */
-    createErrorLog(handleRequest: HandleRequest): object {
-        let log = this.getBaseLog(handleRequest.jovo!);
+    private static createErrorLog(handleRequest: HandleRequest, config: IConfig): object {
+        let log = SlackErrorPlugin.getBaseLog(handleRequest.jovo!, config);
         log.attachments[0].fields.push(
             {
                 "title": "State",
@@ -127,14 +133,19 @@ export class SlackErrorPlugin implements Plugin {
 
         // if the host is lambda, we extract the cloudwatch log link and add it to the logs
         if (handleRequest.host.constructor.name === 'Lambda') {
-            log = this.addCloudWatchUrl(log, handleRequest.host);
+            log = SlackErrorPlugin.addCloudWatchUrl(log, handleRequest.host);
         }
 
         return log;
     }
 
-    private addCloudWatchUrl(log: IBaseLog, host: Host) {
-        const cloudwatchUrl = this.getCloudwatchUrl(host);
+    /**
+     * Adds the Cloudwatch URL to the parsed log object 
+     * @param log 
+     * @param host 
+     */
+    private static addCloudWatchUrl(log: IBaseLog, host: Host) {
+        const cloudwatchUrl = SlackErrorPlugin.getCloudwatchUrl(host);
         const cloudwatchField = {
             "title": "Cloudwatch URL",
             "value": `<${cloudwatchUrl}|Cloudwatch Log URL>`,
@@ -145,24 +156,28 @@ export class SlackErrorPlugin implements Plugin {
         return log;
     }
 
-    private getBaseLog(jovo: Jovo): IBaseLog {
+    /**
+     * Returns the base log object that is the same for all types of errors
+     * @param jovo
+     */
+    private static getBaseLog(jovo: Jovo, config: IConfig): IBaseLog {
         const log = {
-            "channel": this.config.channel,
+            "channel": config.channel,
             "attachments": [
                 {
-                    "fallback": this.config.fallback,
-                    "color": this.config.color,
-                    "pretext": this.config.pretext,
-                    "author_name": this.config.author_name,
-                    "author_link": this.config.author_link,
-                    "author_icon": this.config.author_icon,
-                    "title": this.config.title,
-                    "title_link": this.config.title_link,
-                    "text": this.config.text,
-                    "image_url": this.config.image_url,
-                    "thumb_url": this.config.thumb_url,
-                    "footer": this.config.footer,
-                    "footer_icon": this.config.footer_icon,
+                    "fallback": config.fallback,
+                    "color": config.color,
+                    "pretext": config.pretext,
+                    "author_name": config.author_name,
+                    "author_link": config.author_link,
+                    "author_icon": config.author_icon,
+                    "title": config.title,
+                    "title_link": config.title_link,
+                    "text": config.text,
+                    "image_url": config.image_url,
+                    "thumb_url": config.thumb_url,
+                    "footer": config.footer,
+                    "footer_icon": config.footer_icon,
                     "fields": [
                         {
                             "title": "UserID",
@@ -198,7 +213,7 @@ export class SlackErrorPlugin implements Plugin {
      * @param host Lambda class from jovo-framework
      * @see https://stackoverflow.com/questions/60796991/is-there-a-way-to-generate-the-aws-console-urls-for-cloudwatch-log-group-filters
      */
-    getCloudwatchUrl(host: any): string {
+    private static getCloudwatchUrl(host: any): string {
         const awsRequestId = host.context.awsRequestId;
         const region = host.context.invokedFunctionArn.split(':')[3]; // e.g. arn:aws:lambda:eu-west-1:820261819571:function:testName
         const logGroupName = host.context.logGroupName;
@@ -215,7 +230,42 @@ export class SlackErrorPlugin implements Plugin {
      * Sends out the request to the Slack API
      * @param log message, which will be sent to Slack
      */
-    private async sendRequest(log: object): Promise<void> {
-        await HttpService.post(this.config.webhookUrl, log);
+    private static async sendRequest(url: string, log: object): Promise<void> {
+        await HttpService.post(url, log);
+    }
+
+    /**
+     * Generic function to manually log errors to slack.
+     * @param {string | Error} error the error to be logged
+     */
+    static async logError(jovo: Jovo, error: string | Error): Promise<void> {
+        const pluginConfig = jovo.$app.$plugins.get('SlackErrorPlugin')!.config as IConfig;
+        let log = SlackErrorPlugin.getBaseLog(jovo, pluginConfig);
+
+        log.attachments[0].fields.push({
+            title: 'Error',
+            value: error instanceof Error ? error.stack : error,
+            short: false,
+        });
+
+        if (jovo.$host.constructor.name === 'Lambda') {
+            log = SlackErrorPlugin.addCloudWatchUrl(log, jovo.$host);
+        }
+
+        await SlackErrorPlugin.sendRequest(pluginConfig.webhookUrl, log);
+    }
+
+    static async logMessage(jovo: Jovo, error: string | Error): Promise<void> {
+        const pluginConfig = jovo.$app.$plugins.get('SlackErrorPlugin')!.config as IConfig;
+        const log = {
+            channel: pluginConfig.channel,
+            attachments: [
+                {
+                    text: error instanceof Error ? error.stack : error
+                }
+            ]
+        };
+
+        await SlackErrorPlugin.sendRequest(pluginConfig.webhookUrl, log);
     }
 }
