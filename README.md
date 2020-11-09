@@ -82,6 +82,20 @@ module.exports = {
 
 ![Jovo Plugin Slack Error](./_images/slack-error-plugin.png)
 
+# Manual Logs
+
+You can manually log stuff using the `logError(jovo: Jovo, error: string | Error)` and `logMessage(jovo: Jovo, msg: string | Error)` functions. You always have to parse the jovo object. Inside your intents it would look like this:
+
+```js
+LAUNCH() {
+    SlackErrorPlugin.logError(this, 'Test Error');
+    SlackErrorPlugin.logError(this, new Error('Test Error'));
+    return this.tell('Hello World');
+},
+```
+
+The `logError()` function will use the same design as the other error messages. `logMessage()` will log the message as simple text.
+
 # License
 
 MIT
