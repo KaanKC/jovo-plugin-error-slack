@@ -221,7 +221,7 @@ export class SlackErrorPlugin implements Plugin {
         const baseUrl = `https://${region}.console.aws.amazon.com/cloudwatch/home?region=${region}#logsV2:log-groups/log-group/`;
         const logGroup = `${logGroupName.replace(/\//g, '$252F')}/log-events/`;
         const logStream = `${logStreamName!.replace('$', '$2524').replace('[', '$255B').replace(']', '$255D').replace(/\//g, '$252F')}`;
-        const filterPattern = `$3Ffilterpattern$3D$252${awsRequestId}`
+        const filterPattern = `$3FfilterPattern$3D$2522${awsRequestId}$2522`; // $2522 -> "
         
         return baseUrl + logGroup + logStream + filterPattern;
     }
