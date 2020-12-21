@@ -66,7 +66,7 @@ export class SlackErrorPlugin implements Plugin {
         }
     }
     
-    private static createSessionEndedLog(handleRequest: HandleRequest, config: IConfig) {
+    protected static createSessionEndedLog(handleRequest: HandleRequest, config: IConfig) {
         let log = SlackErrorPlugin.getBaseLog(handleRequest.jovo!, config);
         log.attachments[0].fields.push(       
             {
@@ -111,7 +111,7 @@ export class SlackErrorPlugin implements Plugin {
      * Creates message for Slack
      * @param handleRequest 
      */
-    private static createErrorLog(handleRequest: HandleRequest, config: IConfig): object {
+    protected static createErrorLog(handleRequest: HandleRequest, config: IConfig): object {
         let log = SlackErrorPlugin.getBaseLog(handleRequest.jovo!, config);
         log.attachments[0].fields.push(
             {
