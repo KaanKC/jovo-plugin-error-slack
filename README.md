@@ -24,7 +24,7 @@ To create enable incoming webhooks for your Slack follow this [guide](https://ap
 # Customize
 NOTE: The webhookUrl is a **required** parameter
 
-The plugin sends the error message as an [attachement](https://api.slack.com/docs/message-attachments). Every parameter is customizable except the `ts` parameter.
+The plugin sends the error message as an [attachment](https://api.slack.com/docs/message-attachments). Every parameter is customizable except the `ts` parameter.
 
 You can use the `config.js` file to add the changes in the following format:
 ```javascript
